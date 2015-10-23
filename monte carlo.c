@@ -5,7 +5,7 @@
 #include <omp.h>
 #include <time.h>
 
-#define N_PONTOS 100
+#define N_PONTOS 200000000
 #define PI 3.141592653589793
 
 double gera_coord();
