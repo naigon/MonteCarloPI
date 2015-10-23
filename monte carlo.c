@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define N_PONTOS 10000
+#define N_PONTOS 10000000
 #define PI 3.141592653589793
 
 double gera_coord();
@@ -37,6 +37,7 @@ void calcula_pi(){
 	int pdentro=0,pfora=0;
 	double valor_pi,erro;
 	
+	#pragma omp parallel for num_threads(4)
 	for(i=0;i<N_PONTOS;i++){
 		x=gera_coord();
 		y=gera_coord();
