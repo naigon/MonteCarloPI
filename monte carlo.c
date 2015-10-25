@@ -5,7 +5,7 @@
 #include <omp.h>
 #include <time.h>
 
-#define N_PONTOS 100000 //numero de pontos utilizados no calculo da aproximação
+#define N_PONTOS 20000000 //numero de pontos utilizados no calculo da aproximação
 #define PI 3.141592653589793 //valor de pi até a 15 casa depois da virgula, apenas para fins de comparação com o valor obtido
 
 double gera_coord(); //função que gera numeros aleatorios
@@ -44,7 +44,7 @@ void calcula_pi(){
 	double valor_pi,erro;
 	
 	//instruções do OpenMP que paralelizam o laço, com numero de threads desejado e redução das variaveis locais pdentro e pfora
-	#pragma omp parallel for num_threads(2) reduction(+:pdentro) reduction(+:pfora) 
+	#pragma omp parallel for num_threads(4) schedule(dynamic) private(i) reduction(+:pdentro) reduction(+:pfora) 
 	for(i=0;i<N_PONTOS;i++){
 		x=gera_coord(); //gera coordenada x do ponto
 		y=gera_coord(); //gera coordenada y do ponto
@@ -54,8 +54,9 @@ void calcula_pi(){
 		else
 			pfora++;//se a soma dos quadrados for maior que 1, ponto caiu fora				
 	}		
-valor_pi=4.0*(((double)pdentro)/((double)N_PONTOS)); //calcula aproximado de PI
-erro= valor_pi - PI; //calcula o erro(diferença em relação ao valor ideal de PI)
+
+valor_pi = 4.0*(((double)pdentro)/((double)N_PONTOS)); //calcula aproximado de PI
+erro = valor_pi - PI; //calcula o erro(diferença em relação ao valor ideal de PI)
 
 //imprime informações na tela
 printf("\n");
