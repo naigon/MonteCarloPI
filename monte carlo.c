@@ -5,31 +5,36 @@
 #include <omp.h>
 #include <time.h>
 
-#define N_PONTOS 100
-#define PI 3.141592653589793
+#define N_PONTOS 100000 //numero de pontos utilizados no calculo da aproximação
+#define PI 3.141592653589793 //valor de pi até a 15 casa depois da virgula, apenas para fins de comparação com o valor obtido
 
-double gera_coord();
-void calcula_pi();
+double gera_coord(); //função que gera numeros aleatorios
+void calcula_pi(); //função para o calculo do valor de pi
 
 void main(){
 printf("################### N.D.E. - NELSON DEVELOPMENT ENTERPRISE ###################\n\n");
 
-srand(time(NULL));
-clock_t start_time;
+srand(time(NULL)); //inicia gerador de numeros com a semente
+clock_t start_time; //variaveis para calculo do tempo de execução
 start_time = clock();
 
-calcula_pi();
+calcula_pi(); //chamada da função para o calculo de PI
 
-double tempo = (clock() - start_time) / (double)CLOCKS_PER_SEC;
+double tempo = (clock() - start_time) / (double)CLOCKS_PER_SEC; //obtem o tempo de execução depois da chamada da função calcula_pi
 printf("[TEMPO TOTAL DE EXECUCAO] = %.2f segundos \n\n",tempo);
 
 }
+
+//corpo da função geradora de numeros aleatorios
+//função geral um double aletório, e retorna só a parte após a virgula, pois o objetivo é obter um valor real entre 0 e 1 nas coordenadas do ponto
 
 double gera_coord(){
 	double aux=100.0*((double)(rand())/RAND_MAX);
 	aux=aux - (int)(aux);
 	return aux;
 }
+
+//corpo da função que calcula o valor de PI
 
 void calcula_pi(){
 
@@ -38,20 +43,21 @@ void calcula_pi(){
 	int pdentro=0,pfora=0;
 	double valor_pi,erro;
 	
-	#pragma omp parallel for num_threads(4) reduction(+:pdentro) reduction(+:pfora) 
+	//instruções do OpenMP que paralelizam o laço, com numero de threads desejado e redução das variaveis locais pdentro e pfora
+	#pragma omp parallel for num_threads(2) reduction(+:pdentro) reduction(+:pfora) 
 	for(i=0;i<N_PONTOS;i++){
-		x=gera_coord();
-		y=gera_coord();
-		//printf("P(%d) x=%.15f  y=%.15f \n",i,x,y);
-		if((x*x + y*y) <= 1)
-			pdentro++;
+		x=gera_coord(); //gera coordenada x do ponto
+		y=gera_coord(); //gera coordenada y do ponto
+		//printf("P(%d) x=%.15f  y=%.15f \n",i,x,y); //print auxiliar para verificar geração das coordenadas
+		if((x*x + y*y) <= 1) //soma os quadrados das coordenadas
+			pdentro++; //se a soma dos quadrados for menor ou igual a 1, ponto caiu dentro
 		else
-			pfora++;				
-	}
-		
-valor_pi=4.0*(((double)pdentro)/((double)N_PONTOS));
-erro= valor_pi - PI;
+			pfora++;//se a soma dos quadrados for maior que 1, ponto caiu fora				
+	}		
+valor_pi=4.0*(((double)pdentro)/((double)N_PONTOS)); //calcula aproximado de PI
+erro= valor_pi - PI; //calcula o erro(diferença em relação ao valor ideal de PI)
 
+//imprime informações na tela
 printf("\n");
 printf("[NUMERO TOTAL DE PONTOS] = %d \n\n",N_PONTOS);
 printf("[PONTOS DENTRO DO CIRCULO] = %d \n\n",pdentro);
