@@ -1,12 +1,12 @@
 //NAIGON MEDEIROS MARTINS
-//CALCULO DE PI PELO METODO DE MONTE CARLO
+//CALCULO DE PI PELO METODO DE MONTE CARLO USANDO THREADS(OpenMP)
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
 #include <time.h>
 
-#define N_PONTOS 10000000 //numero de pontos utilizados no calculo da aproximação
+#define N_PONTOS 30000000 //numero de pontos utilizados no calculo da aproximação
 #define PI 3.141592653589793 //valor de pi até a 15a casa depois da virgula, apenas para fins de comparação com o valor obtido
 
 double gera_coord(); //função que gera numeros aleatorios
