@@ -6,7 +6,7 @@
 #include <omp.h>
 #include <time.h>
 
-#define N_PONTOS 30000000 //numero de pontos utilizados no calculo da aproximação
+#define N_PONTOS 50000000 //numero de pontos utilizados no calculo da aproximação
 #define PI 3.141592653589793 //valor de pi até a 15a casa depois da virgula, apenas para fins de comparação com o valor obtido
 
 double gera_coord(); //função que gera numeros aleatorios
@@ -37,10 +37,10 @@ double gera_coord(){
 //corpo da função que calcula o valor de PI
 void calcula_pi(){
 
-	int i;
-	double x,y;
+	int i=0;
+	double x=0,y=0;
 	int pdentro=0,pfora=0;
-	double valor_pi,erro;
+	double valor_pi=0,erro=0;
 	
 	//instruções do OpenMP que paralelizam o laço, com numero de threads desejado e redução das variaveis locais pdentro e pfora
 	//escalonamento dynamic se mostrou melhor que static
