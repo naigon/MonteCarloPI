@@ -12,7 +12,7 @@
 double gera_coord(); //função que gera numeros aleatorios
 void calcula_pi(); //função para o calculo do valor de pi
 
-void main(){
+int main(void){
 printf("################### MONTE CARLO PI ###################\n\n");
 
 srand(time(NULL)); //inicia gerador de numeros com a semente
@@ -24,10 +24,14 @@ calcula_pi(); //chamada da função para o calculo de PI
 double tempo = (clock() - start_time) / (double)CLOCKS_PER_SEC; //obtem o tempo de execução depois do retorno de calcula_pi()
 printf("[TEMPO TOTAL DE EXECUCAO] = %.2f segundos \n\n",tempo); // imprime tempo na tela
 
+return 0;
 }
 
-//corpo da função geradora de numeros aleatorios
-//função geral um double aletório, e retorna só a parte após a virgula, pois o objetivo é obter um valor real entre 0 e 1 nas coordenadas do ponto
+/*	- corpo da função geradora de numeros aleatorios
+função geral um double aletório, e retorna só a parte
+após a virgula, pois o objetivo é obter um valor real 
+entre 0 e 1 nas coordenadas do ponto */
+
 double gera_coord(){
 	double aux=100.0*((double)(rand())/RAND_MAX);
 	aux=aux - (int)(aux);
@@ -42,8 +46,10 @@ void calcula_pi(){
 	int pdentro=0,pfora=0;
 	double valor_pi=0,erro=0;
 	
-	//instruções do OpenMP que paralelizam o laço, com numero de threads desejado e redução das variaveis locais pdentro e pfora
-	//escalonamento dynamic se mostrou melhor que static
+	/*	- instruções do OpenMP que paralelizam o laço, 
+	com numero de threads desejado e redução das variaveis 
+	locais pdentro e pfora...
+		- escalonamento dynamic se mostrou melhor que static */
 	
 	#pragma omp parallel for num_threads(4) schedule(dynamic) private(i) reduction(+:pdentro) reduction(+:pfora) 
 	for(i=0;i<N_PONTOS;i++){
