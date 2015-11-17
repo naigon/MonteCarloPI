@@ -27,8 +27,8 @@ printf("[TEMPO TOTAL DE EXECUCAO] = %.2f segundos \n\n",tempo); // imprime tempo
 return 0;
 }
 
-/*	- corpo da função geradora de numeros aleatorios
-função geral um double aletório, e retorna só a parte
+/*	- Corpo da função geradora de numeros aleatorios,
+ela gera um double aletório, e retorna só a parte
 após a virgula, pois o objetivo é obter um valor real 
 entre 0 e 1 nas coordenadas do ponto */
 
@@ -46,10 +46,10 @@ void calcula_pi(){
 	int pdentro=0,pfora=0;
 	double valor_pi=0,erro=0;
 	
-	/*	- instruções do OpenMP que paralelizam o laço, 
-	com numero de threads desejado e redução das variaveis 
-	locais pdentro e pfora...
-		- escalonamento dynamic se mostrou melhor que static */
+	/*	- Instruções do OpenMP que paralelizam o laço e 
+	dividem as iterações entre as n threads com as devidas
+	operações de redução nas variaveis de interesse pdentro e pfora...
+		- OBS: escalonamento dynamic se mostrou melhor que static(em tempo) */
 	
 	#pragma omp parallel for num_threads(4) schedule(dynamic) private(i) reduction(+:pdentro) reduction(+:pfora) 
 	for(i=0;i<N_PONTOS;i++){
