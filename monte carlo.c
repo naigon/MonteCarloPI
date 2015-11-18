@@ -6,7 +6,14 @@
 #include <omp.h>
 #include <time.h>
 
-#define N_PONTOS 50000000 //numero de pontos utilizados no calculo da aproximação
+#define N_THREADS 4
+
+ #define N_PONTOS 1000000		//10^5
+// #define N_PONTOS 10000000	//10^6
+// #define N_PONTOS 100000000	//10^7
+// #define N_PONTOS 1000000000 	//10^8
+// #define N_PONTOS 999999999	//10^9
+
 #define PI 3.141592653589793 //valor de pi até a 15a casa depois da virgula, apenas para fins de comparação com o valor obtido
 
 double gera_coord(); //função que gera numeros aleatorios
@@ -51,7 +58,7 @@ void calcula_pi(){
 	operações de redução nas variaveis de interesse pdentro e pfora...
 		- OBS: escalonamento dynamic se mostrou melhor que static(em tempo) */
 	
-	#pragma omp parallel for num_threads(4) schedule(dynamic) private(i) reduction(+:pdentro) reduction(+:pfora) 
+	#pragma omp parallel for num_threads(N_THREADS) schedule(dynamic) private(i) reduction(+:pdentro) reduction(+:pfora) 
 	for(i=0;i<N_PONTOS;i++){
 		x=gera_coord(); //gera coordenada x do ponto
 		y=gera_coord(); //gera coordenada y do ponto
