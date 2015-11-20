@@ -1,42 +1,37 @@
 //NAIGON MEDEIROS MARTINS
-//CALCULO DE PI PELO METODO DE MONTE CARLO USANDO THREADS(OpenMP)
+//CALCULO DE PI PELO METODO DE MONTE CARLO USANDO THREADS (OpenMP)
+//OBS: NA COMPILACAO FOI UTILIZADDO O SINALIZADOR DO GNU "-fopenmp"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
 #include <time.h>
 
-#define N_THREADS 4
+#define N_THREADS 4 //numero de threads a serem usadas na divisao da tarefa
+#define N_PONTOS 1000000 //numero de pontos aletorios que serao usados na aproximacao
+#define PI 3.141592653589793 //valor de pi até a 15a casa depois da virgula, apenas para fins de comparacao com o valor obtido no fim
 
- #define N_PONTOS 1000000		//10^5
-// #define N_PONTOS 10000000	//10^6
-// #define N_PONTOS 100000000	//10^7
-// #define N_PONTOS 1000000000 	//10^8
-// #define N_PONTOS 999999999	//10^9
-
-#define PI 3.141592653589793 //valor de pi até a 15a casa depois da virgula, apenas para fins de comparação com o valor obtido
-
-double gera_coord(); //função que gera numeros aleatorios
-void calcula_pi(); //função para o calculo do valor de pi
+double gera_coord(); //funcao que gera numeros aleatorios
+void calcula_pi(); //funcao para o calculo do valor de pi
 
 int main(void){
 printf("################### MONTE CARLO PI ###################\n\n");
 
-srand(time(NULL)); //inicia gerador de numeros com a semente
+srand(time(NULL)); //inicializa gerador de numeros com a semente
 clock_t start_time; //variavel para calculo do tempo de execução
-start_time = clock();
+start_time = clock(); //inicia variavel de contagem de tempo
 
 calcula_pi(); //chamada da função para o calculo de PI
 
-double tempo = (clock() - start_time) / (double)CLOCKS_PER_SEC; //obtem o tempo de execução depois do retorno de calcula_pi()
-printf("[TEMPO TOTAL DE EXECUCAO] = %.2f segundos \n\n",tempo); // imprime tempo na tela
+double tempo = (clock() - start_time) / (double)CLOCKS_PER_SEC; //obtem o tempo de execucao depois do retorno de calcula_pi()
+printf("[TEMPO TOTAL DE EXECUCAO] = %.2f segundos \n\n",tempo); // imprime tempo na tela em segundos
 
 return 0;
 }
 
-/*	- Corpo da função geradora de numeros aleatorios,
-ela gera um double aletório, e retorna só a parte
-após a virgula, pois o objetivo é obter um valor real 
+/*	- Corpo da funcao geradora de numeros aleatorios,
+ela gera um double aletorio, e retorna soh a parte
+apos a virgula, pois o objetivo eh obter um valor real 
 entre 0 e 1 nas coordenadas do ponto */
 
 double gera_coord(){
@@ -45,18 +40,18 @@ double gera_coord(){
 	return aux;
 }
 
-//corpo da função que calcula o valor de PI
+//corpo da função que calcula o valor de PI para N_PONTOS aleaorios desejados
 void calcula_pi(){
-
+		
 	int i=0;
 	double x=0,y=0;
 	int pdentro=0,pfora=0;
 	double valor_pi=0,erro=0;
 	
-	/*	- Instruções do OpenMP que paralelizam o laço e 
-	dividem as iterações entre as n threads com as devidas
-	operações de redução nas variaveis de interesse pdentro e pfora...
-		- OBS: escalonamento dynamic se mostrou melhor que static(em tempo) */
+	/*	- Instrucoes do OpenMP que paralelizam o laco e 
+	dividem as iteracoes entre as n threads com as devidas
+	operacoes de reducao nas variaveis de interesse pdentro e pfora...
+	- OBS: escalonamento dynamic se mostrou melhor que static(em tempo) */
 	
 	#pragma omp parallel for num_threads(N_THREADS) schedule(dynamic) private(i) reduction(+:pdentro) reduction(+:pfora) 
 	for(i=0;i<N_PONTOS;i++){
@@ -69,8 +64,8 @@ void calcula_pi(){
 			pfora++;//se a soma dos quadrados for maior que 1, ponto caiu fora				
 	}		
 
-valor_pi = 4.0*(((double)pdentro)/((double)N_PONTOS)); //calcula aproximado de PI
-erro = valor_pi - PI; //calcula o erro(diferença em relação ao valor ideal de PI)
+valor_pi = 4.0*(((double)pdentro)/((double)N_PONTOS)); //calcula valor aproximado de PI
+erro = valor_pi - PI; //calcula o erro(diferenca em relacao ao valor ideal de PI)
 
 //imprime informações na tela
 printf("\n");
